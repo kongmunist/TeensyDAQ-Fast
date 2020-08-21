@@ -1,5 +1,5 @@
 # TeensyDAQ-Fast
-If you need to get an analog signal from the real world into a text file on your computer, you'll need a DAQ (Data AcQuisition device). However, a decent DAQ costs upwards of $50, and restricts the GUI/output you can use. Because the Teensy's analog-to-digital converter can output 12-bit samples at up to 400kHz, I figured I'd give this a try before buying something new. There's already another project like it [here](https://github.com/JorenSix/TeensyDAQ), but they only get 8kHz out of their Teensy. 
+TeensyDAQ-Fast is a Python application for visualizing and recording analog signals with a [Teensy micro-controller](https://www.pjrc.com/store/teensy40.html). If you need to get an analog signal from the real world into a text file on your computer, you'll need a DAQ (Data AcQuisition device). However, a standalone DAQ costs upwards of $100, and restricts the GUI/output file types you can use. Because the Teensy's analog-to-digital converter can output 12-bit samples at up to 400kHz, I figured I'd give this a try before buying something new. There's already another project like it [here](https://github.com/JorenSix/TeensyDAQ), but they only get 8kHz out of their Teensy. 
 
 I used the fast ADC library on the teensy side to output a continuous stream of readings from pin 18 to Serial, then used the pySerial library to decode it on the computer side. Then I adapted a GUI from @szeloof to record into a specific file. The visualization of the data stream appears after the recording finishes, to show you any egregious errors. The files are saved as .txts, but are actually CSVs. Go crazy!
 
@@ -13,7 +13,7 @@ I used the fast ADC library on the teensy side to output a continuous stream of 
 5. Run SerialGUI.py. 
 6. Click the "Start Recording" button to start and stop the recording. If you want a custom file name, type it in the box and hit enter. (The GUI does not always update when I tell it to).
  
- # Stats
+ # Speed Check
 The Teensy toggles pin 10 whenever it outputs a measurement to the computer, allowing me to time it. The frequency in this case is halved, so the actual Teensy free-running ADC speed is around 2*167kHz = 334 kHz. 
  
 ![ADC output speed](https://github.com/kongmunist/TeensyDAQ-Fast/blob/master/ims/ADCoutput.JPG)
