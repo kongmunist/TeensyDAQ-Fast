@@ -25,17 +25,7 @@ There's already another project like this [here](https://github.com/JorenSix/Tee
 Alternatively, you can use just the Teensy code and record the serial output on the computer any way you want. I recently found a very neat way to do it on Mac/Linux computers [here](https://medium.com/@kongmunist/serial-logging-in-processing-using-shell-commands-183ea8be6791).
 
  # Speed Check
-The Teensy toggles pin 11 whenever it sends a measurement to the computer, allowing me to time it. 
-
-~~The frequency in this case is halved, so the actual Teensy free-running ADC speed is around 2*167kHz = 334 kHz. 
-
-![ADC output speed](https://github.com/kongmunist/TeensyDAQ-Fast/blob/master/ims/ADCoutput.JPG)
-
-The python on the computer checks the timer when it starts and stops receiving data points, so we can clock the computer's receive rate as well. It gets close, but not exactly up to the Teensy's 334 kHz.
-
-![Computer serial receive speed](https://github.com/kongmunist/TeensyDAQ-Fast/blob/master/ims/GUIoutput.png)~~
-
-Currently, the ADC speed is fixed at 100kHz stably. We can access the free-running speed by dialing the two timer delays down to 1 on lines 40-41, accessing a jittery speed of ~400kHz. 
+The Teensy toggles pin 11 whenever it sends a measurement to the computer, allowing me to time it. Currently, the ADC speed is fixed at 100kHz stably. We can access the free-running speed by dialing the two timer delays down to 1 on lines 40-41, accessing a jittery speed of ~400kHz. 
 
 I have also improved the Python side by turning rtscts=True. I do not know why this isn't on by default since we lose data without it, but hopefully now we don't lose data anymore
 
@@ -45,10 +35,15 @@ I switched to using timers for sampling and printing data to serial in a more st
 
 Here is the jitter in output data rate using v1, approximately 6uS on a 154kHz signal (which takes ~6uS to sample). ADC resolution is set to 13 bits, Serial set to 2000000, data output with Serial.println()
 
+https://github.com/kongmunist/TeensyDAQ-Fast/assets/29759597/acf605ef-2906-4921-ac4d-cc0a98a16c8e
+
 Here's the jitter now, using v2. Settings same as above, we get 100kHz with low jitter.
+
+https://github.com/kongmunist/TeensyDAQ-Fast/assets/29759597/85333d69-af3e-42a8-b334-c11a5becdd34
 
 Same settings as above, v2, using Serial.write() instead of println. Even better!
 
+https://github.com/kongmunist/TeensyDAQ-Fast/assets/29759597/b8cef35f-3d08-412a-880c-80fa9c1c72ff
 
 # Example images
 # Output file
