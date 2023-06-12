@@ -1,27 +1,53 @@
 # TeensyDAQ-Fast
-TeensyDAQ-Fast is a Python application for visualizing and recording analog signals with a [Teensy micro-controller](https://www.pjrc.com/store/teensy40.html). If you need to get an analog signal from the real world into a text file on your computer, you'll need a DAQ (Data AcQuisition device). However, a standalone DAQ costs upwards of $100, and restricts the GUI/output file types you can use. Because the Teensy's analog-to-digital converter can output 12-bit samples at up to 400kHz, I figured I'd give this a try before buying something new. There's already another project like it [here](https://github.com/JorenSix/TeensyDAQ), but they only get 8kHz out of their Teensy. 
+TeensyDAQ-Fast is a Python application + [Teensy](https://www.pjrc.com/store/teensy40.html) script for recording and visualizing analog signals. Jitter-free operation at 100kHz sampling rate on the Teensy 3.5, and possibly higher for more recent Teensy releases. 
 
-I used the fast ADC library on the teensy side to output a continuous stream of readings from pin 18 to Serial, then used the pySerial library to decode it on the computer side. Then I adapted a GUI from @szeloof to record into a specific file. The visualization of the data stream appears after the recording finishes, to show you any egregious errors. The files are saved as .txts, but are actually CSVs. Go crazy!
+## Motivation
+Usually, converting an analog signal into a digital file on your computer rqeuires a DAQ (Data AcQuisition device). However, a standalone DAQ costs upwards of $100, and restricts the GUI and output file types. Because the Teensy's built-in ADC can digitize 12-bits at up to 400kHz, I figured I'd give this a try before buying something new. 
+
+## Brief summary
+I'm using the [ADC library](https://github.com/pedvide/ADC) by pedvide on the Teensy to output a continuous stream of recordings to the serial port. On the python side, I use pySerial to connect to the serial port and read it into a text file. I modified a GUI from another project to give a nice visualization of the recorded data — this graph only appears after the recording finishes to show you any egregious errors. The files are saved as txt, but are actually CSVs. Have fun!
 
 ![GUI picture](https://github.com/kongmunist/TeensyDAQ-Fast/blob/master/ims/GUI.png)
- 
- # How to Use
-1. Clone the repo.  
+
+The old version of this program could reach a 300kHz sampling rate (13 bit, Teensy 4.0) with no regard for jitter in the sampling time. In the interest of stable sampling, the sampling rate has come down to 100kHz (13 bit, Teensy 3.5) with little to no jitter in the digitization/communication time. See update notes for more info.
+
+There's already another project like this [here](https://github.com/JorenSix/TeensyDAQ), but they only get 8kHz out of their Teensy. 
+
+
+ # Usage
+1. Clone this repo. 
 2. Your <b>Python</b> instance is going to need PyQt5, pySerial, and matplotlib (I ran it in Python 3.6). 
 3. Push the Teensy code to the <b>Teensy</b> however you would like (I'm using Teensy 4.0)
-4. Plug your Teensy into your computer. Connect your signal to pin 18.
+4. Plug your Teensy into your computer. Connect your signal to pin 14
 5. Run SerialGUI.py. 
 6. Click the "Start Recording" button to start and stop the recording. If you want a custom file name, type it in the box and hit enter. (The GUI does not always update when I tell it to).
  
+Alternatively, you can use just the Teensy code and record the serial output on the computer any way you want. I recently found a very neat way to do it on Mac/Linux computers [here](https://medium.com/@kongmunist/serial-logging-in-processing-using-shell-commands-183ea8be6791).
+
  # Speed Check
-The Teensy toggles pin 10 whenever it outputs a measurement to the computer, allowing me to time it. The frequency in this case is halved, so the actual Teensy free-running ADC speed is around 2*167kHz = 334 kHz. 
- 
+The Teensy toggles pin 11 whenever it sends a measurement to the computer, allowing me to time it. 
+
+~~The frequency in this case is halved, so the actual Teensy free-running ADC speed is around 2*167kHz = 334 kHz. 
+
 ![ADC output speed](https://github.com/kongmunist/TeensyDAQ-Fast/blob/master/ims/ADCoutput.JPG)
 
 The python on the computer checks the timer when it starts and stops receiving data points, so we can clock the computer's receive rate as well. It gets close, but not exactly up to the Teensy's 334 kHz.
 
-![Computer serial receive speed](https://github.com/kongmunist/TeensyDAQ-Fast/blob/master/ims/GUIoutput.png)
+![Computer serial receive speed](https://github.com/kongmunist/TeensyDAQ-Fast/blob/master/ims/GUIoutput.png)~~
 
+Currently, the ADC speed is fixed at 100kHz stably. We can access the free-running speed by dialing the two timer delays down to 1 on lines 40-41, accessing a jittery speed of ~400kHz. 
+
+I have also improved the Python side by turning rtscts=True. I do not know why this isn't on by default since we lose data without it, but hopefully now we don't lose data anymore
+
+# Updates
+### 6/12/23 Update 2.0
+I switched to using timers for sampling and printing data to serial in a more stable way. This has fixed a lot of jitter in the sampling rate, which is a problem for certain types of data. I also added rtscts=True to Python. 
+
+Here is the jitter in output data rate using v1, approximately 6uS on a 154kHz signal (which takes ~6uS to sample). ADC resolution is set to 13 bits, Serial set to 2000000, data output with Serial.println()
+
+Here's the jitter now, using v2. Settings same as above, we get 100kHz with low jitter.
+
+Same settings as above, v2, using Serial.write() instead of println. Even better!
 
 
 # Example images

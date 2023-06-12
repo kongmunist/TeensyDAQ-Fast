@@ -130,7 +130,7 @@ class SerialThread(threading.Thread):
 
     def run(self):
         try:
-            self.com = serial.Serial(self.port, self.baud, timeout = 0.5)
+            self.com = serial.Serial(self.port, self.baud, timeout = 0.5, rtscts=True)
             self.rl = ReadLine(self.com)
         except Exception as e:
             print("\nSERIAL PORT ERROR:", e)
