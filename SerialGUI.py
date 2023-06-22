@@ -160,7 +160,7 @@ class Dialog(QDialog):
         layout = QVBoxLayout()
 
         # Make dropdown
-        dropdownChoices = glob.glob("/dev/tty.*")[::-1]
+        dropdownChoices = glob.glob("/dev/tty*")[::-1]
         self.dd = QComboBox()
         self.dd.addItems(dropdownChoices)
         self.formGroupBox = QGroupBox("")
