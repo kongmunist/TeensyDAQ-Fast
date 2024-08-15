@@ -15,11 +15,6 @@ int averages = 0;
 int resolution = 13;
 float mult;
 
-// Buffer declaration
-#define BUFFER_SIZE (1L << 8)
-uint16_t buffer[BUFFER_SIZE];
-uint8_t buffer_count = BUFFER_SIZE;
-
 IntervalTimer myTimer,myTimer2;
 volatile uint16_t valu2 = 0;
 volatile boolean newTick;
